@@ -1,3 +1,5 @@
+import { selectOnOffButton, getOnOff } from "./on-off.js";
+
 /**
  * CSS to hide everything on the page,
  * except for elements that have the "beastify-image" class.
@@ -32,17 +34,20 @@ function listenForClicks() {
         * then get the beast URL and
         * send a "beastify" message to the content script in the active tab.
         */
-        function beastify(tabs) {
-            console.log(e.target.textContent);
+        function beastify() {
             browser.tabs.insertCSS({ code: hidePage }).then(() => {
                 let url = beastNameToURL(e.target.textContent);
-                browser.tabs.sendMessage(tabs[0].id, {
+                browser.tabs.sendMessage("snake", {
                     command: "beastify",
                     beastURL: url
                 });
             });
         }
 
+        function setOnOff(tabs) {
+            console.log('setting onOff')
+            selectOnOffButton(e.target.textContent);
+        }
         /**
         * Remove the page-hiding CSS from the active tab,
         * send a "reset" message to the content script in the active tab.
@@ -66,6 +71,12 @@ function listenForClicks() {
         * Get the active tab,
         * then call "beastify()" or "reset()" as appropriate.
         */
+        if (e.target.classList.contains("on-off")) {
+            browser.tabs.query({ active: true, currentWindow: true })
+                .then(setOnOff)
+                .catch(reportError);
+        }
+        /*
         if (e.target.classList.contains("beast")) {
             browser.tabs.query({ active: true, currentWindow: true })
                 .then(beastify)
@@ -76,6 +87,7 @@ function listenForClicks() {
                 .then(reset)
                 .catch(reportError);
         }
+        */
     });
 }
 
