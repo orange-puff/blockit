@@ -33,6 +33,7 @@ function listenForClicks() {
         * send a "beastify" message to the content script in the active tab.
         */
         function beastify(tabs) {
+            console.log(e.target.textContent);
             browser.tabs.insertCSS({ code: hidePage }).then(() => {
                 let url = beastNameToURL(e.target.textContent);
                 browser.tabs.sendMessage(tabs[0].id, {

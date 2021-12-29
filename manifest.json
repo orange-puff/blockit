@@ -16,8 +16,8 @@
   
     "browser_action": {
       "default_icon": "icons/beasts-32.png",
-      "default_title": "Beastify",
-      "default_popup": "popup/choose_beast.html"
+      "default_title": "BlockIt",
+      "default_popup": "popup/blockit.html"
     },
   
     "web_accessible_resources": [

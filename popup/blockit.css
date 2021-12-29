@@ -14,12 +14,14 @@ html, body {
     cursor: pointer;
   }
   
-  .beast:hover {
+  .on-off:hover {
     background-color: #CFF2F2;
   }
   
-  .beast {
+  .on-off {
     background-color: #E5F2F2;
+    display: inline-block;
+    border: 1px solid black;
   }
   
   .reset {
