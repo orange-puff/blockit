@@ -7,8 +7,6 @@ html, body {
   }
   
   .button {
-    margin: 3% auto;
-    padding: 4px;
     text-align: center;
     font-size: 1.5em;
     cursor: pointer;
@@ -20,8 +18,7 @@ html, body {
   
   .onOff {
     background-color: #E5F2F2;
-    display: inline-block;
-    border: 1px solid black;
+    float: left;
   }
   
   .reset {
@@ -30,5 +27,19 @@ html, body {
   
   .reset:hover {
     background-color: #EAEA9D;
+  }
+
+  .onOffContainer {
+    border: 1px solid black;
+    display: table;
+    width: 100%;
+  }
+
+  #on {
+    width: 50%;
+  }
+
+  #off {
+    width: 50%
   }
   

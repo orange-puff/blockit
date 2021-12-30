@@ -36,6 +36,10 @@
     }
 
     function updateOnOff() {
+        let buttons = document.querySelectorAll(".onOff");
+        for (let button of buttons) {
+            button.style.background = onColor;
+        }
         let onButton = document.getElementById("on");
         let offButton = document.getElementById("off");
         if (true) {
