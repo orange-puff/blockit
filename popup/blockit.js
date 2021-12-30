@@ -1,4 +1,4 @@
-import { selectOnOffButton, getOnOff } from "./on-off.js";
+import { selectOnOffButton } from "./onOff.js";
 
 /**
  * CSS to hide everything on the page,
@@ -34,10 +34,10 @@ function listenForClicks() {
         * then get the beast URL and
         * send a "beastify" message to the content script in the active tab.
         */
-        function beastify() {
+        function beastify(tabs) {
             browser.tabs.insertCSS({ code: hidePage }).then(() => {
                 let url = beastNameToURL(e.target.textContent);
-                browser.tabs.sendMessage("snake", {
+                browser.tabs.sendMessage(tabs[0].id, {
                     command: "beastify",
                     beastURL: url
                 });
@@ -45,9 +45,13 @@ function listenForClicks() {
         }
 
         function setOnOff(tabs) {
-            console.log('setting onOff')
             selectOnOffButton(e.target.textContent);
+            browser.tabs.sendMessage(tabs[0].id, {
+                command: "onOff",
+                on: e.target.textContent == "on"
+            });
         }
+
         /**
         * Remove the page-hiding CSS from the active tab,
         * send a "reset" message to the content script in the active tab.
@@ -71,9 +75,18 @@ function listenForClicks() {
         * Get the active tab,
         * then call "beastify()" or "reset()" as appropriate.
         */
-        if (e.target.classList.contains("on-off")) {
+        if (e.target.classList.contains("onOff")) {
             browser.tabs.query({ active: true, currentWindow: true })
                 .then(setOnOff)
+                .catch(reportError);
+        }
+        else if (e.target.classList.contains("reset")) {
+            browser.tabs.query({ active: true, currentWindow: true })
+                .then(reset)
+                .catch(reportError);
+        } else if (e.target.classList.contains("beast")) {
+            browser.tabs.query({ active: true, currentWindow: true })
+                .then(beastify)
                 .catch(reportError);
         }
         /*
@@ -109,3 +122,4 @@ function reportExecuteScriptError(error) {
 browser.tabs.executeScript({ file: "/content_scripts/beastify.js" })
     .then(listenForClicks)
     .catch(reportExecuteScriptError);
+

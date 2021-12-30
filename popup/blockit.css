@@ -14,11 +14,11 @@ html, body {
     cursor: pointer;
   }
   
-  .on-off:hover {
+  .onOff:hover {
     background-color: #CFF2F2;
   }
   
-  .on-off {
+  .onOff {
     background-color: #E5F2F2;
     display: inline-block;
     border: 1px solid black;

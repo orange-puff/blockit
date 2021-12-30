@@ -13,7 +13,6 @@ export function selectOnOffButton(button) {
     }
 }
 
-export function getOnOff(handleOnOff) {
-    browser.storage.local.get("onOff", (result) => handleOnOff(result.onOff.value));
-    //var on = (await Promise.resolve(browser.storage.local.get("onOff"))).onOff.value;
+export function setOnOff() {
+    
 }
