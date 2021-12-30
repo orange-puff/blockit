@@ -1,4 +1,4 @@
-import { selectOnOffButton } from "./onOff.js";
+import { selectOnOffButton, updateOnOffButton } from "./onOff.js";
 
 /**
  * CSS to hide everything on the page,
@@ -46,9 +46,7 @@ function listenForClicks() {
 
         function setOnOff(tabs) {
             selectOnOffButton(e.target.textContent);
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "onOff",
-            });
+            updateOnOffButton(e.target.textContent);
         }
 
         /**
@@ -106,6 +104,21 @@ function reportExecuteScriptError(error) {
 * and add a click handler.
 * If we couldn't inject the script, handle the error.
 */
+
+function onStartUp() {
+    browser.storage.local.get("onOff")
+        .then((result) => {
+            if (Object.entries(result).length === 0) {
+                selectOnOffButton("on");
+                updateOnOffButton("on");
+            } else {
+                updateOnOffButton(result.onOff.value ? "on" : "off");
+            }
+        });
+}
+
+onStartUp();
+
 browser.tabs.executeScript({ file: "/content_scripts/beastify.js" })
     .then(listenForClicks)
     .catch(reportExecuteScriptError);
