@@ -1,4 +1,6 @@
 (function () {
+    const onColor = "#63c056";
+    const offColor = "#E5F2F2";
     /**
      * Check and set a global guard variable.
      * If this content script is injected into the same page again,
@@ -33,6 +35,19 @@
         }
     }
 
+    function updateOnOff() {
+        let onButton = document.getElementById("on");
+        let offButton = document.getElementById("off");
+        if (true) {
+            onButton.style.background = onColor;
+            offButton.style.background = offColor;
+        }
+        else {
+            onButton.style.background = offColor;
+            offButton.style.background = onColor;
+        }
+    }
+
     /**
      * Listen for messages from the background script.
      * Call "insertBeast()" or "removeExistingBeasts()".
@@ -42,7 +57,11 @@
             insertBeast(message.beastURL);
         } else if (message.command === "reset") {
             removeExistingBeasts();
+        } else if (message.command === "onOff") {
+            updateOnOff();
         }
     });
-    console.log('yo');
+
+
+
 })();

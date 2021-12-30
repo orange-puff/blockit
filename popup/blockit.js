@@ -48,7 +48,6 @@ function listenForClicks() {
             selectOnOffButton(e.target.textContent);
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "onOff",
-                on: e.target.textContent == "on"
             });
         }
 
@@ -89,18 +88,6 @@ function listenForClicks() {
                 .then(beastify)
                 .catch(reportError);
         }
-        /*
-        if (e.target.classList.contains("beast")) {
-            browser.tabs.query({ active: true, currentWindow: true })
-                .then(beastify)
-                .catch(reportError);
-        }
-        else if (e.target.classList.contains("reset")) {
-            browser.tabs.query({ active: true, currentWindow: true })
-                .then(reset)
-                .catch(reportError);
-        }
-        */
     });
 }
 
