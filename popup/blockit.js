@@ -118,8 +118,21 @@ function onStartUp() {
 }
 
 onStartUp();
+listenForClicks();
 
-browser.tabs.executeScript({ file: "/content_scripts/beastify.js" })
-    .then(listenForClicks)
-    .catch(reportExecuteScriptError);
-
+/**
+ * When a tab is loaded, check if the plugin is on. If the plugin is on, check if the url matches the page.
+ * If it does, block it
+ */
+browser.tabs.onActivated.addListener(function (activeInfo) {
+    browser.storage.local.get("onOff")
+        .then((result) => {
+            if (Object.entries(result).length === 0 || !result.onOff.value) {
+                return;
+            }
+            browser.tabs.query({currentWindow: true, active: true}).then((tabs) => {
+                let tab = tabs[0]; // Safe to assume there will only be one result
+                console.log(tab.url);
+            }, console.error)
+        });
+});
