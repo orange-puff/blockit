@@ -1,8 +1,7 @@
 /**
  * CSS to hide everything on the page,
- * except for elements that have the "beastify-image" class.
  */
-const hidePage = `body > : {
+ const hidePage = `body {
     display: none;
   }`;
 
@@ -21,6 +20,7 @@ browser.tabs.onActivated.addListener(function (activeInfo) {
                 let tab = tabs[0];
                 console.log(tab.url);
                 browser.tabs.insertCSS({code: hidePage})
+                .then(() => console.log('good'));
             }, console.error)
         });
 });

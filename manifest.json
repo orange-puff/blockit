@@ -12,8 +12,8 @@
   
     "permissions": [
       "tabs",
-      "activeTab",
-      "storage"
+      "storage",
+      "<all_urls>"
     ],
   
     "browser_action": {
@@ -23,7 +23,7 @@
     },
 
     "background": {
-      "scripts": ["background_scripts/blocker.js"]
+      "page": "background-page.html"
     },
   
     "web_accessible_resources": [

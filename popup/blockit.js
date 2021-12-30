@@ -56,12 +56,7 @@ function reportExecuteScriptError(error) {
 function onStartUp() {
     browser.storage.local.get("onOff")
         .then((result) => {
-            if (Object.entries(result).length === 0) {
-                selectOnOffButton("on");
-                updateOnOffButton("on");
-            } else {
-                updateOnOffButton(result.onOff.value ? "on" : "off");
-            }
+            updateOnOffButton(result.onOff.value ? "on" : "off");
         });
 }
 
