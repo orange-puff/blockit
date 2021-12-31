@@ -38,18 +38,21 @@ html, body {
 .blockedListContainer {
   margin-top: 30px;
   width: 100%;
-  display: table;
 }
 
 .blockedList:hover {
   background-color: #CFF2F2;
 }
 
-.blockedList {
+.blockedListInput {
   background-color: #E5F2F2;
   float: left;
   height: 20px;
   border: 1px solid black;
+}
+
+.blockedListInputContainer {
+  display: table;
 }
 
 #blockedListInput {
@@ -57,11 +60,22 @@ html, body {
 }
 
 .blockedListItemContainer {
-  margin-top: 30px;
+  margin-top: 10px;
   width: 100%;
 }
 
 .blockedListItem {
+  display: table;
   width: 100%;
   border-bottom: 1px solid grey;
+  margin-top: 5px;
+}
+
+.blockedListItemAdd {
+  float: right;
+  height: 15px;
+}
+
+.blockedListItemEntity {
+  float: left;
 }

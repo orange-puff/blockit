@@ -11,6 +11,10 @@ function listenForClicks() {
             updateOnOffButton(e.target.textContent);
         }
 
+        function addBlockedListItem(tabs) {
+            
+        }
+
         /**
         * Just log the error to the console.
         */
@@ -24,6 +28,11 @@ function listenForClicks() {
         if (e.target.classList.contains("onOff")) {
             browser.tabs.query({ active: true, currentWindow: true })
                 .then(setOnOff)
+                .catch(reportError);
+        }
+        else if (e.target.classList.contains("blockedListInput")) {
+            browser.tabs.query({ active: true, currentWindow: true })
+                .then(addBlockedListItem)
                 .catch(reportError);
         }
     });
