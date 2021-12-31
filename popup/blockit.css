@@ -1,45 +1,67 @@
 html, body {
-    width: 100px;
-  }
-  
-  .hidden {
-    display: none;
-  }
-  
-  .button {
-    text-align: center;
-    font-size: 1.5em;
-    cursor: pointer;
-  }
-  
-  .onOff:hover {
-    background-color: #CFF2F2;
-  }
-  
-  .onOff {
-    background-color: #E5F2F2;
-    float: left;
-  }
-  
-  .reset {
-    background-color: #FBFBC9;
-  }
-  
-  .reset:hover {
-    background-color: #EAEA9D;
-  }
+  width: 250px;
+}
 
-  .onOffContainer {
-    border: 1px solid black;
-    display: table;
-    width: 100%;
-  }
+.hidden {
+  display: none;
+}
 
-  #on {
-    width: 50%;
-  }
+.button {
+  text-align: center;
+  font-size: 1.5em;
+  cursor: pointer;
+}
 
-  #off {
-    width: 50%
-  }
-  
+.onOffContainer {
+  border: 1px solid black;
+  display: table;
+  width: 40%;
+}
+
+.onOff:hover {
+  background-color: #CFF2F2;
+}
+
+.onOff {
+  background-color: #E5F2F2;
+  float: left;
+}
+
+#on {
+  width: 50%;
+}
+
+#off {
+  width: 50%
+}
+
+.blockedListContainer {
+  margin-top: 30px;
+  width: 100%;
+  display: table;
+}
+
+.blockedList:hover {
+  background-color: #CFF2F2;
+}
+
+.blockedList {
+  background-color: #E5F2F2;
+  float: left;
+  height: 20px;
+  border: 1px solid black;
+}
+
+#blockedListInput {
+  float: left;
+}
+
+.blockedListItemContainer {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.blockedListItem {
+  width: 100%;
+  border-bottom: 1px solid grey;
+}
