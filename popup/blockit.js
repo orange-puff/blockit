@@ -1,6 +1,5 @@
 import { selectOnOffButton, updateOnOffButton } from "../utils/onOffUtil.js";
 
-
 /**
 * Listen for clicks on the buttons, and send the appropriate message to
 * the content script in the page.
@@ -13,18 +12,6 @@ function listenForClicks() {
         }
 
         /**
-        * Remove the page-hiding CSS from the active tab,
-        * send a "reset" message to the content script in the active tab.
-        
-        function reset(tabs) {
-            browser.tabs.removeCSS({ code: hidePage }).then(() => {
-                browser.tabs.sendMessage(tabs[0].id, {
-                    command: "reset",
-                });
-            });
-        }*/
-
-        /**
         * Just log the error to the console.
         */
         function reportError(error) {
@@ -32,8 +19,7 @@ function listenForClicks() {
         }
 
         /**
-        * Get the active tab,
-        * then call "beastify()" or "reset()" as appropriate.
+        * Get the active tab, then call method handler for whichever button they chose
         */
         if (e.target.classList.contains("onOff")) {
             browser.tabs.query({ active: true, currentWindow: true })
@@ -53,6 +39,9 @@ function reportExecuteScriptError(error) {
     console.log(`Failed to execute beastify content script: ${error.message}`);
 }
 
+/**
+ * Basic UI updating when they open the popup, like highlighting whether the plugin is off or on
+ */
 function onStartUp() {
     browser.storage.local.get("onOff")
         .then((result) => {
@@ -60,5 +49,10 @@ function onStartUp() {
         });
 }
 
-onStartUp();
-listenForClicks();
+try {
+    onStartUp();
+    listenForClicks();
+}
+catch (err) {
+    reportExecuteScriptError(err);
+}
