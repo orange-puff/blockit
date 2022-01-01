@@ -1,5 +1,9 @@
 import { selectOnOffButton, updateOnOffButton } from '../utils/onOffUtil.js';
-import { tryCleanUrl, addBlockedListItem } from '../utils/blockedListUtil.js';
+import { tryCleanUrl, addBlockedListItem, deleteBlockedListItem } from '../utils/blockedListUtil.js';
+
+const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID = 'blockedListItemDeleteButton';
+const BLOCKED_LIST_ITEM_ID = 'blockedListItemEntity';
+const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID_REGEX = /^blockedListItemDeleteButton\d+$/;
 
 /**
 * Listen for clicks on the buttons, and send the appropriate message to
@@ -36,6 +40,12 @@ function listenForClicks() {
             browser.tabs.query({ active: true, currentWindow: true })
                 .then(setBlockedListItem)
                 .catch(reportError);
+        }
+        else if (e.target.id.match(BLOCKED_LIST_ITEM_DELETE_BUTTON_ID_REGEX)) {
+            const deleteButtonNum = e.target.id.substr(BLOCKED_LIST_ITEM_DELETE_BUTTON_ID.length);
+            const blockedListItem = document.getElementById(BLOCKED_LIST_ITEM_ID + deleteButtonNum);
+            const blockedListItemName = blockedListItem.textContent;
+            deleteBlockedListItem(blockedListItemName);
         }
     });
 }
