@@ -12,7 +12,7 @@ function listenForClicks() {
         }
 
         function addBlockedListItem(tabs) {
-            
+
         }
 
         /**
