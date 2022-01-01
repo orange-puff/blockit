@@ -1,4 +1,5 @@
-import { selectOnOffButton, updateOnOffButton } from "../utils/onOffUtil.js";
+import { selectOnOffButton, updateOnOffButton } from '../utils/onOffUtil.js';
+import { tryCleanUrl, addBlockedListItem } from '../utils/blockedListUtil.js';
 
 /**
 * Listen for clicks on the buttons, and send the appropriate message to
@@ -11,8 +12,9 @@ function listenForClicks() {
             updateOnOffButton(e.target.textContent);
         }
 
-        function addBlockedListItem(tabs) {
-
+        function setBlockedListItem(tabs) {
+            const input = document.getElementById("blockedListInput");
+            addBlockedListItem(input.value);
         }
 
         /**
@@ -32,7 +34,7 @@ function listenForClicks() {
         }
         else if (e.target.classList.contains("blockedListInput")) {
             browser.tabs.query({ active: true, currentWindow: true })
-                .then(addBlockedListItem)
+                .then(setBlockedListItem)
                 .catch(reportError);
         }
     });
@@ -52,10 +54,22 @@ function reportExecuteScriptError(error) {
  * Basic UI updating when they open the popup, like highlighting whether the plugin is off or on
  */
 function onStartUp() {
+    // set on/off color
     browser.storage.local.get("onOff")
         .then((result) => {
             updateOnOffButton(result.onOff.value ? "on" : "off");
         });
+
+    // set current tab url to the one in the input
+    browser.tabs.query({ currentWindow: true, active: true })
+        .then((tabs) => {
+            const tabUrl = tabs[0].url;
+            const cleanedUrl = tryCleanUrl(tabUrl);
+            if (cleanedUrl !== null) {
+                let input = document.getElementById("blockedListInput");
+                input.value = cleanedUrl;
+            }
+        }, console.error)
 }
 
 try {
