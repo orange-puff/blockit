@@ -68,6 +68,7 @@ function listenForClicks() {
             const input = document.getElementById("blockedListInput");
             addBlockedListItem(input.value);
             updateBlockedListUI(true, input.value);
+            //notifyBackgroundPage();
         }
 
         /**
@@ -76,6 +77,14 @@ function listenForClicks() {
         function reportError(error) {
             console.error(`Could not blockit; ${error}`);
         }
+
+
+          
+          function notifyBackgroundPage() {
+            browser.runtime.sendMessage({
+              greeting: "Greeting from the content script"
+            });
+          }
 
         /**
         * Get the active tab, then call method handler for whichever button they chose

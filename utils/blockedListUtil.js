@@ -24,6 +24,10 @@ export function addBlockedListItem(blockedListItem) {
         }
         return originalBlockedItemList;
     });
+
+    browser.runtime.sendMessage({
+        greeting: "Greeting from the content script"
+      });
 }
 
 export function deleteBlockedListItem(blockedListItem) {

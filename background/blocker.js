@@ -23,6 +23,9 @@ browser.tabs.onUpdated.addListener(function (activeInfo) {
                     let tabUrl = tabs[0].url;
                     browser.storage.local.get("blockedList")
                         .then((blockedListMeta) => {
+                            if (Object.entries(blockedListMeta).length === 0 ) {
+                                return;
+                            }
                             let shouldBlock = false;
                             blockedListMeta.blockedList.value.forEach(url => {
                                 shouldBlock |= tabUrl.includes(url);
@@ -35,3 +38,10 @@ browser.tabs.onUpdated.addListener(function (activeInfo) {
                 }, console.error);
         });
 });
+
+function handleMessage(request, sender, sendResponse) {
+    console.log("Message from the content script: " +
+      request.greeting);
+  }
+  
+  browser.runtime.onMessage.addListener(handleMessage);
