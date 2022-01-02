@@ -30,6 +30,7 @@ function updateBlockedListUI(added, url) {
         })
 }
 
+// this creates the ui elements that make up the blockedList
 function updateBlockedListUICore(blockedList) {
     const blockedListItemContainer = document.getElementById("blockedListItemContainer");
     while (blockedListItemContainer.hasChildNodes()) {

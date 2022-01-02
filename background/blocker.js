@@ -3,7 +3,7 @@ import { addBlockedListItem } from "../utils/blockedListUtil.js";
 /**
  * CSS to hide everything on the page,
  */
-const hidePage = `body {
+const HIDE_PAGE = `body {
     display: none;
   }`;
 
@@ -15,11 +15,23 @@ browser.tabs.onUpdated.addListener(function (activeInfo) {
     browser.storage.local.get("onOff")
         .then((result) => {
             if (Object.entries(result).length === 0 || !result.onOff.value) {
+                browser.tabs.removeCSS({ code: HIDE_PAGE });
                 return;
             }
             browser.tabs.query({ currentWindow: true, active: true })
                 .then((tabs) => {
                     let tabUrl = tabs[0].url;
-                }, console.error)
+                    browser.storage.local.get("blockedList")
+                        .then((blockedListMeta) => {
+                            let shouldBlock = false;
+                            blockedListMeta.blockedList.value.forEach(url => {
+                                shouldBlock |= tabUrl.includes(url);
+                            });
+                            if (shouldBlock) {
+                                browser.tabs.insertCSS({ code: HIDE_PAGE });
+                            }
+                        });
+
+                }, console.error);
         });
 });
