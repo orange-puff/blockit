@@ -5,6 +5,53 @@ const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID = 'blockedListItemDeleteButton';
 const BLOCKED_LIST_ITEM_ID = 'blockedListItemEntity';
 const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID_REGEX = /^blockedListItemDeleteButton\d+$/;
 
+// we need to filter out the newly added / deleted url
+function updateBlockedListUI(added, url) {
+    browser.storage.local.get("blockedList")
+        .then((result) => {
+            let blockedList = []
+            if (Object.entries(result).length !== 0) {
+                blockedList = result.blockedList.value;
+            }
+
+            const idx = blockedList.indexOf(url);
+            if (added) {
+                if (idx === -1) {
+                    blockedList.push(url);
+                }
+            }
+            else {
+                if (idx > -1) {
+                    blockedList.splice(idx, 1);
+                }
+            }
+
+            updateBlockedListUICore(blockedList);
+        })
+}
+
+function updateBlockedListUICore(blockedList) {
+    const blockedListItemContainer = document.getElementById("blockedListItemContainer");
+    while (blockedListItemContainer.hasChildNodes()) {
+        blockedListItemContainer.removeChild(blockedListItemContainer.lastChild);
+    }
+    blockedList.forEach((url, idx) => {
+        const blockedListItemEl = document.createElement("div");
+        blockedListItemEl.className = "blockedListItem";
+        const blockedListItemEntityEl = document.createElement("div");
+        blockedListItemEntityEl.className = "blockedListItemEntity";
+        blockedListItemEntityEl.id = BLOCKED_LIST_ITEM_ID + idx.toString();
+        blockedListItemEntityEl.textContent = url;
+        const blockedListItemDeleteButtonEl = document.createElement("div");
+        blockedListItemDeleteButtonEl.className = "button";
+        blockedListItemDeleteButtonEl.id = BLOCKED_LIST_ITEM_DELETE_BUTTON_ID + idx.toString();
+        blockedListItemDeleteButtonEl.textContent = 'X';
+        blockedListItemEl.appendChild(blockedListItemEntityEl);
+        blockedListItemEl.appendChild(blockedListItemDeleteButtonEl);
+        blockedListItemContainer.appendChild(blockedListItemEl);
+    });
+}
+
 /**
 * Listen for clicks on the buttons, and send the appropriate message to
 * the content script in the page.
@@ -19,6 +66,7 @@ function listenForClicks() {
         function setBlockedListItem(tabs) {
             const input = document.getElementById("blockedListInput");
             addBlockedListItem(input.value);
+            updateBlockedListUI(true, input.value);
         }
 
         /**
@@ -46,6 +94,7 @@ function listenForClicks() {
             const blockedListItem = document.getElementById(BLOCKED_LIST_ITEM_ID + deleteButtonNum);
             const blockedListItemName = blockedListItem.textContent;
             deleteBlockedListItem(blockedListItemName);
+            updateBlockedListUI(false, blockedListItemName);
         }
     });
 }
@@ -80,6 +129,16 @@ function onStartUp() {
                 input.value = cleanedUrl;
             }
         }, console.error)
+
+    // set current blockedItemList
+    browser.storage.local.get("blockedList")
+        .then((result) => {
+            if (Object.entries(result).length === 0 || result.blockedList.value.length === 0) {
+                return;
+            }
+
+            updateBlockedListUICore(result.blockedList.value);
+        })
 }
 
 try {

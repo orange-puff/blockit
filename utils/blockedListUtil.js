@@ -51,6 +51,5 @@ function updateBlockedListItem(blockedListItemFilter) {
 
             blockedListMeta.blockedList.value = blockedListItemFilter(blockedListMeta.blockedList.value);
             browser.storage.local.set(blockedListMeta);
-            console.log(blockedListMeta.blockedList.value);
         });
 }

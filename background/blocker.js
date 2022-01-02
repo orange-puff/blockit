@@ -20,7 +20,6 @@ browser.tabs.onUpdated.addListener(function (activeInfo) {
             browser.tabs.query({ currentWindow: true, active: true })
                 .then((tabs) => {
                     let tabUrl = tabs[0].url;
-                    console.log('Just activated ' + tabUrl);
                 }, console.error)
         });
 });
