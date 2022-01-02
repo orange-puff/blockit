@@ -1,57 +1,15 @@
 import { selectOnOffButton, updateOnOffButton } from '../utils/onOffUtil.js';
-import { tryCleanUrl, addBlockedListItem, deleteBlockedListItem } from '../utils/blockedListUtil.js';
+import {
+    tryCleanUrl,
+    addBlockedListItem,
+    deleteBlockedListItem,
+    updateBlockedListUI,
+    BLOCKED_LIST_ITEM_ID,
+    BLOCKED_LIST_ITEM_DELETE_BUTTON_ID
+}
+    from '../utils/blockedListUtil.js';
 
-const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID = 'blockedListItemDeleteButton';
-const BLOCKED_LIST_ITEM_ID = 'blockedListItemEntity';
 const BLOCKED_LIST_ITEM_DELETE_BUTTON_ID_REGEX = /^blockedListItemDeleteButton\d+$/;
-
-// we need to filter out the newly added / deleted url
-function updateBlockedListUI(added, url) {
-    browser.storage.local.get("blockedList")
-        .then((result) => {
-            let blockedList = []
-            if (Object.entries(result).length !== 0) {
-                blockedList = result.blockedList.value;
-            }
-
-            const idx = blockedList.indexOf(url);
-            if (added) {
-                if (idx === -1) {
-                    blockedList.push(url);
-                }
-            }
-            else {
-                if (idx > -1) {
-                    blockedList.splice(idx, 1);
-                }
-            }
-
-            updateBlockedListUICore(blockedList);
-        })
-}
-
-// this creates the ui elements that make up the blockedList
-function updateBlockedListUICore(blockedList) {
-    const blockedListItemContainer = document.getElementById("blockedListItemContainer");
-    while (blockedListItemContainer.hasChildNodes()) {
-        blockedListItemContainer.removeChild(blockedListItemContainer.lastChild);
-    }
-    blockedList.forEach((url, idx) => {
-        const blockedListItemEl = document.createElement("div");
-        blockedListItemEl.className = "blockedListItem";
-        const blockedListItemEntityEl = document.createElement("div");
-        blockedListItemEntityEl.className = "blockedListItemEntity";
-        blockedListItemEntityEl.id = BLOCKED_LIST_ITEM_ID + idx.toString();
-        blockedListItemEntityEl.textContent = url;
-        const blockedListItemDeleteButtonEl = document.createElement("div");
-        blockedListItemDeleteButtonEl.className = "button";
-        blockedListItemDeleteButtonEl.id = BLOCKED_LIST_ITEM_DELETE_BUTTON_ID + idx.toString();
-        blockedListItemDeleteButtonEl.textContent = 'X';
-        blockedListItemEl.appendChild(blockedListItemEntityEl);
-        blockedListItemEl.appendChild(blockedListItemDeleteButtonEl);
-        blockedListItemContainer.appendChild(blockedListItemEl);
-    });
-}
 
 /**
 * Listen for clicks on the buttons, and send the appropriate message to
@@ -64,11 +22,16 @@ function listenForClicks() {
             updateOnOffButton(e.target.textContent);
         }
 
-        function setBlockedListItem(tabs) {
+        function addBlockedListItemWrapper(tabs) {
             const input = document.getElementById("blockedListInput");
             addBlockedListItem(input.value);
-            updateBlockedListUI(true, input.value);
-            //notifyBackgroundPage();
+        }
+
+        function deleteBlockedListItemWrapper() {
+            const deleteButtonNum = e.target.id.substr(BLOCKED_LIST_ITEM_DELETE_BUTTON_ID.length);
+            const blockedListItem = document.getElementById(BLOCKED_LIST_ITEM_ID + deleteButtonNum);
+            const blockedListItemName = blockedListItem.textContent;
+            deleteBlockedListItem(blockedListItemName);
         }
 
         /**
@@ -77,14 +40,6 @@ function listenForClicks() {
         function reportError(error) {
             console.error(`Could not blockit; ${error}`);
         }
-
-
-          
-          function notifyBackgroundPage() {
-            browser.runtime.sendMessage({
-              greeting: "Greeting from the content script"
-            });
-          }
 
         /**
         * Get the active tab, then call method handler for whichever button they chose
@@ -96,15 +51,11 @@ function listenForClicks() {
         }
         else if (e.target.classList.contains("blockedListInput")) {
             browser.tabs.query({ active: true, currentWindow: true })
-                .then(setBlockedListItem)
+                .then(addBlockedListItemWrapper)
                 .catch(reportError);
         }
         else if (e.target.id.match(BLOCKED_LIST_ITEM_DELETE_BUTTON_ID_REGEX)) {
-            const deleteButtonNum = e.target.id.substr(BLOCKED_LIST_ITEM_DELETE_BUTTON_ID.length);
-            const blockedListItem = document.getElementById(BLOCKED_LIST_ITEM_ID + deleteButtonNum);
-            const blockedListItemName = blockedListItem.textContent;
-            deleteBlockedListItem(blockedListItemName);
-            updateBlockedListUI(false, blockedListItemName);
+            deleteBlockedListItemWrapper();
         }
     });
 }
@@ -141,14 +92,7 @@ function onStartUp() {
         }, console.error)
 
     // set current blockedItemList
-    browser.storage.local.get("blockedList")
-        .then((result) => {
-            if (Object.entries(result).length === 0 || result.blockedList.value.length === 0) {
-                return;
-            }
-
-            updateBlockedListUICore(result.blockedList.value);
-        })
+    updateBlockedListUI();
 }
 
 try {
