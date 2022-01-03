@@ -6,14 +6,21 @@ function createOnOff(on) {
 }
 
 export function selectOnOffButton(button) {
+    let newVal = false;
     switch (button.toLowerCase()) {
         case "on":
-            browser.storage.local.set(createOnOff(true));
+            newVal = true;
             break;
         case "off":
-            browser.storage.local.set(createOnOff(false));
             break;
     }
+    // send a message to the `blocker` background script that the on/off button has just been pressed
+
+    browser.runtime.sendMessage({
+        messageName: "onOff",
+        on: newVal
+      });
+    browser.storage.local.set(createOnOff(newVal));
 }
 
 export function updateOnOffButton(button) {

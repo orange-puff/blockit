@@ -40,8 +40,17 @@ browser.tabs.onUpdated.addListener(function (activeInfo) {
 });
 
 function handleMessage(request, sender, sendResponse) {
-    console.log("Message from the content script: " +
-      request.greeting);
+    if (request.messageName === "onOff") {
+        console.log('onOff!');
+        console.log(request);
+    }
+    else if (request.messageName === "blockedList") {
+        console.log('blockedList!');
+        console.log(request);
+    }
+    else {
+        console.log("Unknown message!");
+    }
   }
   
   browser.runtime.onMessage.addListener(handleMessage);

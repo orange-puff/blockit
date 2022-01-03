@@ -24,16 +24,12 @@ export function addBlockedListItem(blockedListItem) {
         if (originalBlockedItemList.indexOf(cleanedUrl) === -1) {
             originalBlockedItemList.push(cleanedUrl);
         }
-        
+
         // update the UI with this added blockedItem
         updateBlockedListUICore(originalBlockedItemList);
 
         return originalBlockedItemList;
     });
-
-    browser.runtime.sendMessage({
-        greeting: "Greeting from the content script"
-      });
 }
 
 export function deleteBlockedListItem(blockedListItem) {
@@ -65,17 +61,23 @@ function updateBlockedListItem(blockedListItemFilter) {
 
             blockedListMeta.blockedList.value = blockedListItemFilter(blockedListMeta.blockedList.value);
             browser.storage.local.set(blockedListMeta);
+
+            // send message to background script `blocker` that the blockedList has been updated
+            browser.runtime.sendMessage({
+                messageName: "blockedList",
+                blockedList: blockedListMeta.blockedList.value
+            });
         });
 }
 
 export function updateBlockedListUI() {
     browser.storage.local.get("blockedList")
-    .then(result => {
-        if (Object.entries(result).length === 0 || result.blockedList.value.length === 0) {
-            return;
-        }
-        updateBlockedListUICore(result.blockedList.value);
-    });
+        .then(result => {
+            if (Object.entries(result).length === 0 || result.blockedList.value.length === 0) {
+                return;
+            }
+            updateBlockedListUICore(result.blockedList.value);
+        });
 }
 
 // this creates the ui elements that make up the blockedList
