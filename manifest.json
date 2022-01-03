@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "Beastify",
+  "name": "BlockIt",
   "version": "1.0",
-  "description": "Adds a browser action icon to the toolbar. Click the button to choose a beast. The active tab's body content is then replaced with a picture of the chosen beast. See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Examples#beastify",
-  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "description": "There are sites that we spend too much time on. BlockIt allows you to quickly block websites to avoid using them.",
+  "homepage_url": "https://github.com/orange-puff/blockit",
   "icons": {
-    "48": "icons/beasts-48.png"
+    "48": "icons/red-brick-wall-48.png"
   },
   "permissions": [
     "tabs",
@@ -13,7 +13,7 @@
     "<all_urls>"
   ],
   "browser_action": {
-    "default_icon": "icons/beasts-32.png",
+    "default_icon": "icons/red-brick-wall-48.png",
     "default_title": "BlockIt",
     "default_popup": "popup/blockit.html"
   },
