@@ -1,5 +1,3 @@
-import { addBlockedListItem } from "../utils/blockedListUtil.js";
-
 /**
  * CSS to hide everything on the page,
  */
